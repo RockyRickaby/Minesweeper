@@ -14,7 +14,7 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-	private static final List<String> imageNamesList = Arrays.asList("cell.png", "cellopened.png", "marked1.png", "marked2.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
+	private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked1.png", "marked2.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
 	private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
 	private static Grid instance = null;
@@ -219,7 +219,7 @@ public class Grid extends JPanel {
             for (int j = 0; j < MAXCOL; j++) {
                 Cell c = grid[i][j];
                 if (c.isBomb()) {
-                    c.setText("B");
+                    c.setIcon(images.get("mine.png"));
                 }
                 c.disable();
 			}
@@ -239,7 +239,7 @@ public class Grid extends JPanel {
                 y = r.nextInt(MAXCOL);
             } while(grid[x][y].isBomb());
             grid[x][y].makeBomb();
-            grid[x][y].setText("v");
+            //grid[x][y].setText("v");
         }
     }
     
@@ -283,7 +283,7 @@ public class Grid extends JPanel {
     		java.net.URL imgurl = App.class.getResource("images/" + s);
     		if (imgurl == null) {
     			System.out.printf("It was not possible to load the image %s", s);
-    			JOptionPane.showMessageDialog(null, String.format("It was not possible to open the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
+    			JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
     			System.exit(2);
     		}
     		ImageIcon img = new ImageIcon(imgurl);
