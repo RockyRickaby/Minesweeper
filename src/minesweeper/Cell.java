@@ -3,17 +3,18 @@ package minesweeper;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
 public class Cell extends JButton implements ActionListener {
     private boolean isBomb, marked, disabled;
-    private int i, j;
-    private String label;
+    public final int i, j;
     private Grid grid;
 	
     /**
-     * Constructs a cell that is not a bomb.
+     * Constructs a cell that is not a mine.
      * @param cellSize the size of the cell, dictated by the difficulty of the game.
      * @param grid the grid from which this cell is part of.
      * @param i the I index of the cell.
@@ -24,19 +25,10 @@ public class Cell extends JButton implements ActionListener {
         this.i = i;
         this.j = j;
         this.grid = grid;
-        this.label = "";
         this.isBomb = this.marked = this.disabled = false;
-        super.setPreferredSize(new Dimension(cellSize,cellSize));
+        super.setPreferredSize(new Dimension(cellSize, cellSize));
         super.addActionListener(this);
     }    
-	
-    /**
-     * Sets this Cell's label to be the number of adjacent bombs. 
-     * @param num the number of adjacent bombs.
-     */
-    public void setNumber(int num) {
-        super.setText(String.valueOf(num));
-    }
 	
     /**
      * Checks if this Cell is a bomb or not.
@@ -47,11 +39,28 @@ public class Cell extends JButton implements ActionListener {
     }
 
     /**
-     * Turns this cell into a bomb. To avoid creating unnecessary
-     * instances of cells..
+     * Turns this cell into a mine. To avoid creating unnecessary
+     * instances of cells. Better reuse the already existing ones
+     * while and if we can!
+     * <p>A mine cell will always be a mine until the end of the game.
      */
     public void makeBomb() {
         this.isBomb = true;
+    }
+    
+    /**
+     * Marks this cell as a possible bomb. The player will
+     * not be able to interact much with this cell while it is marked.
+     */
+    public void mark() { //hello, everybody, my name is Markiplier
+    	if (this.marked) {
+    		System.out.printf("Unarked the cell at [%d, %d]\n", this.i, this.j);
+    		super.setIcon(grid.getImage("cell.png"));
+    	} else {
+    		System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
+    		super.setIcon(grid.getImage("marked1.png"));
+    	}
+    	this.marked = !this.marked;
     }
 	
     /**
@@ -79,20 +88,11 @@ public class Cell extends JButton implements ActionListener {
     public void disable() {
         this.disabled = true;
 	}
-	
-    public int getI() {
-        return this.i;
-    }
-	
-    public int getJ() {
-        return this.j;
-    }
-	
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (this.grid.inMarkMode() && !this.disabled) {
-            this.marked = !this.marked;
+            this.mark();
         } else {
             this.grid.action(this);
         }

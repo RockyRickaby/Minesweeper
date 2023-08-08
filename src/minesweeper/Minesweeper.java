@@ -2,12 +2,14 @@ package minesweeper;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JOptionPane;
 import java.awt.event.ComponentAdapter;
@@ -26,7 +28,7 @@ public class Minesweeper extends JFrame implements ActionListener {
         Difficulties[] itens = {Difficulties.EASY,
                                 Difficulties.INTERMEDIATE,
                                 Difficulties.ADVANCED};
-        dif = (Difficulties) JOptionPane.showInputDialog(null, "Please, choose a difficulty.", "Difficulties", JOptionPane.INFORMATION_MESSAGE, null, itens, itens[0]);
+        dif = (Difficulties) JOptionPane.showInputDialog(this, "Please, choose a difficulty", "Difficulties", JOptionPane.INFORMATION_MESSAGE, null, itens, itens[0]);
         
         if (dif == null) {
         	System.exit(1);
@@ -34,29 +36,31 @@ public class Minesweeper extends JFrame implements ActionListener {
 		
         JPanel restart = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton rest = new JButton("restart");
-        //rest.addActionListener(this);
         rest.addActionListener(this);
         restart.add(rest);
-        //restart.add(count);
 	
         JButton mark = new JButton("mark");
         mark.addActionListener(this);
         restart.add(mark);
 		
-        grid = new Grid(dif);
+        grid = Grid.getInstance(dif);
         JPanel gridContainer = new JPanel(new GridBagLayout());
         gridContainer.add(grid);
+        JScrollPane scrollGrid = new JScrollPane(gridContainer);
 		
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(restart);
-        panel.add(gridContainer);
-		
+        panel.add(scrollGrid);
+		this.setTitle("Minesweeper");
         this.getContentPane().add(panel);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        //this.add(panel);
-        //this.setSize(780, 700);
-        this.pack();
+        //Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() >= 1080 || dif == Difficulties.EASY) {
+        	this.pack();
+        } else {
+        	this.setSize(800, 600);
+        }
         this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -67,11 +71,16 @@ public class Minesweeper extends JFrame implements ActionListener {
         JButton button = (JButton) e.getSource();
         String buttonText = button.getText();
         if (buttonText.equals("restart")) {
+        	System.out.println("Restarting the game...");
             this.grid.reset();
         }
         if (buttonText.equals("mark")) {
-            System.out.println("mark mode toggled");
             this.grid.toggleMarkMode();
+            if (this.grid.inMarkMode()) {
+            	System.out.println("Mark mode toggled on");
+            } else {
+            	System.out.println("Mark mode toggled off");
+            }
         }
     }
 }
