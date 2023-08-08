@@ -2,7 +2,8 @@ package minesweeper;
 import javax.swing.JPanel;
 
 import java.awt.GridLayout;
-
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 @SuppressWarnings("serial")
@@ -12,6 +13,11 @@ public class Grid extends JPanel {
 	
     private Cell[][] grid;
     private boolean marking;
+    
+    private static final int[][] directions = {{1,0},
+    										   {0,1},
+    										   {-1,0},
+    										   {0,-1}};
 	
     /**
      * Constructs a minesweeper grid whose size changes according to the game's
@@ -65,9 +71,7 @@ public class Grid extends JPanel {
             disableAll();
             return;
 		}
-        //TODO - ajustar isso aqui
-        int c = this.countAdjacentMines(cell.getI(), cell.getJ());
-        System.out.println(c);
+		clearCells(cell);
 	}
 	
     /**
@@ -93,6 +97,34 @@ public class Grid extends JPanel {
             }
         }
         return count;
+    }
+    
+    private void clearCells(Cell cell) {
+    	Queue<Cell> cells = new LinkedList<>();
+    	boolean[][] seen = new boolean[MAXLIN][MAXCOL];
+    	cells.offer(cell);
+    	while (!cells.isEmpty()) {
+    		Cell c = cells.poll();
+    		if (seen[c.getI()][c.getJ()]) {
+    			continue;
+    		}
+    		seen[c.getI()][c.getJ()] = true;
+    		int numMines = countAdjacentMines(c.getI(), c.getJ());
+    		if (numMines > 0) {
+    			c.setNumber(numMines);
+    			System.out.println(numMines);
+    			c.setEnabled(false);
+    			continue;
+    		}
+    		c.setEnabled(false);
+    		for (int[] dir : directions) {
+    			int idx1 = c.getI() + dir[0], idx2 = c.getJ() + dir[1];
+    			if (idx1 < 0 || idx1 >= MAXLIN || idx2 < 0 || idx2 >= MAXCOL) {
+					continue;
+                }
+    			cells.offer(grid[idx1][idx2]);
+    		}
+    	}
     }
 
 	

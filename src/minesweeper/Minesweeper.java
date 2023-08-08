@@ -27,6 +27,10 @@ public class Minesweeper extends JFrame implements ActionListener {
                                 Difficulties.INTERMEDIATE,
                                 Difficulties.ADVANCED};
         dif = (Difficulties) JOptionPane.showInputDialog(null, "Please, choose a difficulty.", "Difficulties", JOptionPane.INFORMATION_MESSAGE, null, itens, itens[0]);
+        
+        if (dif == null) {
+        	System.exit(1);
+        }
 		
         JPanel restart = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton rest = new JButton("restart");
@@ -45,7 +49,7 @@ public class Minesweeper extends JFrame implements ActionListener {
 		
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        panel.add(rest);
+        panel.add(restart);
         panel.add(gridContainer);
 		
         this.getContentPane().add(panel);
@@ -56,15 +60,6 @@ public class Minesweeper extends JFrame implements ActionListener {
         this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-    }
-	
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Minesweeper();
-            }
-        });
     }
 
     @Override

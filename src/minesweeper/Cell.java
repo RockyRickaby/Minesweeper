@@ -89,14 +89,12 @@ public class Cell extends JButton implements ActionListener {
     }
 	
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (this.grid.inMarkMode() && !this.disabled) {
-			this.marked = !this.marked;
-		} else {
-			this.grid.action(this);
-		}
-		
-	}
-	
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (this.grid.inMarkMode() && !this.disabled) {
+            this.marked = !this.marked;
+        } else {
+            this.grid.action(this);
+        }
+    }
 }
