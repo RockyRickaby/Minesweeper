@@ -14,7 +14,7 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-	private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked1.png", "marked2.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
+	private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
 	private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
 	private static Grid instance = null;
@@ -150,7 +150,8 @@ public class Grid extends JPanel {
             }
             seen[idx1][idx2] = true;
             //we'll probably not need this one since this loop
-            //should stop before reaching a bomb thanks to the next if statement.
+            //should stop before reaching a bomb thanks to the if statement after the next,
+            //the one that checks the number of adjacent mines.
             //if (c.isBomb()) { 
             //	continue;       
             //}
@@ -162,10 +163,10 @@ public class Grid extends JPanel {
                 //c.setNumber(numMines);
                 System.out.printf("Number of adjacent mines in [%d, %d]: %d\n", idx1, idx2, numMines);
                 c.setIcon(images.get(String.format("%d.png", numMines)));
-                c.disable();
+                c.disableCell();
                 continue;
     		}
-            c.disable();
+            c.disableCell();
             c.setIcon(images.get("cellopened.png"));
             for (int[] dir : directions) {
                 idx1 = c.i + dir[0];
@@ -221,7 +222,7 @@ public class Grid extends JPanel {
                 if (c.isBomb()) {
                     c.setIcon(images.get("mine.png"));
                 }
-                c.disable();
+                c.disableCell();
 			}
 		}
 	}
@@ -282,7 +283,7 @@ public class Grid extends JPanel {
     	for (String s : imageNamesList) {
     		java.net.URL imgurl = App.class.getResource("images/" + s);
     		if (imgurl == null) {
-    			System.out.printf("It was not possible to load the image %s", s);
+    			System.out.printf("It was not possible to load the image %s\n", s);
     			JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
     			System.exit(2);
     		}
@@ -294,7 +295,7 @@ public class Grid extends JPanel {
     /**
      * Returns the ImageIcon image associated with the string {@code image}.
      * @param image the image name.
-     * @return an image or null if there's no image with that name.
+     * @return an image or null if there's no image associated with the string.
      */
     public ImageIcon getImage(String image) {
     	return this.images.get(image);

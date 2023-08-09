@@ -54,11 +54,11 @@ public class Cell extends JButton implements ActionListener {
      */
     public void mark() { //hello, everybody, my name is Markiplier
     	if (this.marked) {
-    		System.out.printf("Unarked the cell at [%d, %d]\n", this.i, this.j);
+    		System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
     		super.setIcon(grid.getImage("cell.png"));
     	} else {
     		System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
-    		super.setIcon(grid.getImage("marked1.png"));
+    		super.setIcon(grid.getImage("marked.png"));
     	}
     	this.marked = !this.marked;
     }
@@ -80,12 +80,11 @@ public class Cell extends JButton implements ActionListener {
     }
 	
     /**
-     * Disables this cell. This method should only be used when the player touches a bomb
-     * or if this cell has at least one adjacent mine.
+     * Disables this cell. This method should only be used when the player touches the cell.
      * <p>It is not possible to enable a cell after disabling it without resetting
      * the entire grid.
      */
-    public void disable() {
+    public void disableCell() {
         this.disabled = true;
 	}
 
