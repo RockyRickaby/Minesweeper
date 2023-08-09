@@ -1,5 +1,5 @@
 # Minesweeper
 
-This is a minesweeper game made in java using the Java Swing framework.
+This is a minesweeper game made in Java with Swing.
 
 Made with Eclipse.
