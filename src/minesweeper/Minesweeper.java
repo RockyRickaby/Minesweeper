@@ -49,14 +49,14 @@ public class Minesweeper extends JFrame implements ActionListener {
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(restart);
         panel.add(scrollGrid);
-		this.setTitle("Minesweeper");
+        this.setTitle("Minesweeper");
         this.getContentPane().add(panel);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() >= 1080 || dif == Difficulties.EASY) {
-        	this.pack();
+            this.pack();
         } else {
-        	this.setSize(800, 600);
+            this.setSize(800, 600);
         }
         this.setResizable(false);
         this.setVisible(true);

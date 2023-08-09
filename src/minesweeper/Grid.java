@@ -96,7 +96,7 @@ public class Grid extends JPanel {
             System.out.println("Game over!");
             disableAll();
             return;
-		}
+        }
         clearCells(cell);
     }
 	
