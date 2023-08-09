@@ -53,10 +53,12 @@ public class Minesweeper extends JFrame implements ActionListener {
         this.getContentPane().add(panel);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() >= 1080 || dif == Difficulties.EASY) {
+        double monitorHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        double monitorWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+        if (monitorHeight >= 1080 || dif == Difficulties.EASY || (dif == Difficulties.ADVANCED && monitorWidth > 1024)) {
             this.pack();
         } else {
-            this.setSize(800, 600);
+            this.setSize(676, 600);
         }
         this.setResizable(false);
         this.setVisible(true);

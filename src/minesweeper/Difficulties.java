@@ -2,8 +2,8 @@ package minesweeper;
 
 public enum Difficulties {
     EASY(9, 9, 10, 50),
-    INTERMEDIATE(16, 18, 40, 42),
-    ADVANCED(16, 30, 99, 32);
+    INTERMEDIATE(16, 16, 40, 40),
+    ADVANCED(16, 30, 99, 36);
 	
     public final int numOfCellsX, numOfCellsY, numOfBombs, cellSize;
 

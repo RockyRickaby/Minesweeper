@@ -84,7 +84,7 @@ public class Cell extends JButton implements ActionListener {
      */
     public void disableCell() {
         this.disabled = true;
-	}
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
