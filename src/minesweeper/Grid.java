@@ -14,7 +14,7 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-    private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
+    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
     private static Grid instance = null;
@@ -36,8 +36,8 @@ public class Grid extends JPanel {
     private Grid(Difficulties dif) {
         super();
         this.dif = dif;
-        this.MAXLIN  = dif.numOfCells;
-        this.MAXCOL =  (int) (dif.numOfCells * 1.5);
+        this.MAXLIN = dif.numOfCellsX;
+        this.MAXCOL = dif.numOfCellsY;
         this.MINES = dif.numOfBombs;
         this.marking = false;
 		
@@ -48,7 +48,7 @@ public class Grid extends JPanel {
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
                 grid[i][j] = new Cell(dif.cellSize, i, j);
-                grid[i][j].setIcon(images.get("cell.png"));
+                grid[i][j].setIcon(images.get("cell"));
             }
         }
         this.setVisible(true);
@@ -58,7 +58,10 @@ public class Grid extends JPanel {
     
     /**
      * Just to make sure that there are no more than one current instances
-     * of Grid.
+     * of Grid. You may use {@code null} for the Difficulty
+     * if you just want the current instance. If there's no current instance available
+     * and {@code dif} is null, prepare yourself for some very foreseeable consequences
+     * (the NullPointerException kind of consequences).
      * @param dif the game's difficulty.
      * @return the Grid instance.
      */
@@ -76,7 +79,7 @@ public class Grid extends JPanel {
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
                 grid[i][j] = new Cell(this.dif.cellSize, i, j);
-                grid[i][j].setIcon(images.get("cell.png"));
+                grid[i][j].setIcon(images.get("cell"));
             }
         }
         this.setMines();
@@ -164,12 +167,12 @@ public class Grid extends JPanel {
             if (numMines > 0) {
                 //c.setNumber(numMines);
                 System.out.printf("Number of adjacent mines in [%d, %d]: %d\n", idx1, idx2, numMines);
-                c.setIcon(images.get(String.format("%d.png", numMines)));
+                c.setIcon(images.get(String.format("%d", numMines)));
                 c.disableCell();
                 continue;
     		}
             c.disableCell();
-            c.setIcon(images.get("cellopened.png"));
+            c.setIcon(images.get("cellopened"));
             for (int[] dir : directions) {
                 idx1 = c.i + dir[0];
                 idx2 = c.j + dir[1];
@@ -217,7 +220,7 @@ public class Grid extends JPanel {
             for (int j = 0; j < MAXCOL; j++) {
                 Cell c = grid[i][j];
                 if (c.isBomb()) {
-                    c.setIcon(images.get("mine.png"));
+                    c.setIcon(images.get("mine"));
                 }
                 c.disableCell();
             }
@@ -273,12 +276,11 @@ public class Grid extends JPanel {
     
     /**
      * Loads all the necessary images and saves them in a HashMap for
-     * ease of access. An image may be accessed by its filename plus the
-     * file extension. 
+     * ease of access. An image may be accessed by its filename.
      */
     private void loadImages() {
     	for (String s : imageNamesList) {
-            java.net.URL imgurl = App.class.getResource("images/" + s);
+            java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
             if (imgurl == null) {
                 System.out.printf("It was not possible to load the image %s\n", s);
                 JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
