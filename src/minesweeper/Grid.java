@@ -15,7 +15,7 @@ import java.util.Random;
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
 	private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
-	private static final HashMap<String, ImageIcon> images = new HashMap<>();
+    private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
 	private static Grid instance = null;
 	
@@ -28,7 +28,7 @@ public class Grid extends JPanel {
     //this one is for the clearCells method.
     private static final int[][] directions = {{1,0},
     										   {0,1},
-    										   {-1,0},
+    									       {-1,0},
     										   {0,-1}};
 	
     /**
@@ -298,6 +298,6 @@ public class Grid extends JPanel {
      * @return an image or null if there's no image associated with the string.
      */
     public ImageIcon getImage(String image) {
-    	return this.images.get(image);
+    	return images.get(image);
     }
 }
