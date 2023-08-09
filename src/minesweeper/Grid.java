@@ -14,10 +14,10 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-	private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
+    private static final List<String> imageNamesList = Arrays.asList("mine.png", "cell.png", "cellopened.png", "marked.png", "1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
-	private static Grid instance = null;
+    private static Grid instance = null;
 	
     private final int MAXLIN, MAXCOL, MINES;
     private final Difficulties dif;
@@ -26,10 +26,7 @@ public class Grid extends JPanel {
     private boolean marking;
     
     //this one is for the clearCells method.
-    private static final int[][] directions = {{1,0},
-    										   {0,1},
-    									       {-1,0},
-    										   {0,-1}};
+    private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
 	
     /**
      * Constructs a minesweeper grid whose size changes according to the game's
@@ -67,7 +64,7 @@ public class Grid extends JPanel {
      */
     public static Grid getInstance(Difficulties dif) {
     	if (instance == null) {
-    		instance = new Grid(dif);
+            instance = new Grid(dif);
     	}
     	return instance;
     }	
@@ -95,13 +92,13 @@ public class Grid extends JPanel {
             System.out.println("The cell is disabled/marked!");
             return;
         }
-		if (cell.isBomb()) {
-			System.out.println("Game over!");
+        if (cell.isBomb()) {
+            System.out.println("Game over!");
             disableAll();
             return;
 		}
-		clearCells(cell);
-	}
+        clearCells(cell);
+    }
 	
     /**
      * Counts and returns the amount of mines around a given cell.
@@ -121,7 +118,7 @@ public class Grid extends JPanel {
                     continue;
                 }
                 if (grid[idx1][idx2].isBomb()) {
-					count += 1;
+                    count += 1;
                 }
             }
         }
@@ -178,9 +175,9 @@ public class Grid extends JPanel {
             }
         }
     	if (cleared()) {
-    		System.out.println("You won!");
-    		this.disableAll();
-    		JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
+            System.out.println("You won!");
+            this.disableAll();
+            JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
     	}
     }
     
@@ -223,9 +220,9 @@ public class Grid extends JPanel {
                     c.setIcon(images.get("mine.png"));
                 }
                 c.disableCell();
-			}
-		}
-	}
+            }
+        }
+    }
 	
     /**
      * Sets some of the grid's cells as mines. The amount of mines change
@@ -247,16 +244,16 @@ public class Grid extends JPanel {
     private boolean cleared() {
     	int count = 0;
     	for (Cell[] cc : grid) {
-    		for (Cell c : cc) {
-    			if (c.isBomb()) {
-    				continue;
-    			}
-    			if (!c.isEnabled() || c.isDisabled()) {
-    				count++;
-    			}
-    		}
-    	}
-    	return count == (MAXLIN * MAXCOL - dif.numOfBombs);
+            for (Cell c : cc) {
+                if (c.isBomb()) {
+                    continue;
+                }
+                if (!c.isEnabled() || c.isDisabled()) {
+                    count++;
+                }
+            }
+        }
+        return count == (MAXLIN * MAXCOL - dif.numOfBombs);
     }
 	
     /**
@@ -281,14 +278,14 @@ public class Grid extends JPanel {
      */
     private void loadImages() {
     	for (String s : imageNamesList) {
-    		java.net.URL imgurl = App.class.getResource("images/" + s);
-    		if (imgurl == null) {
-    			System.out.printf("It was not possible to load the image %s\n", s);
-    			JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
-    			System.exit(2);
-    		}
-    		ImageIcon img = new ImageIcon(imgurl);
-    		images.put(s, new ImageIcon(img.getImage().getScaledInstance(dif.cellSize - 3, dif.cellSize - 3, Image.SCALE_SMOOTH)));
+            java.net.URL imgurl = App.class.getResource("images/" + s);
+            if (imgurl == null) {
+                System.out.printf("It was not possible to load the image %s\n", s);
+                JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
+                System.exit(2);
+            }
+            ImageIcon img = new ImageIcon(imgurl);
+            images.put(s, new ImageIcon(img.getImage().getScaledInstance(dif.cellSize - 3, dif.cellSize - 3, Image.SCALE_SMOOTH)));
     	}
     }
     

@@ -53,11 +53,11 @@ public class Cell extends JButton implements ActionListener {
      */
     public void mark() { //hello, everybody, my name is Markiplier
     	if (this.marked) {
-    		System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
-    		super.setIcon(grid.getImage("cell.png"));
+            System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
+            super.setIcon(grid.getImage("cell.png"));
     	} else {
-    		System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
-    		super.setIcon(grid.getImage("marked.png"));
+            System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
+            super.setIcon(grid.getImage("marked.png"));
     	}
     	this.marked = !this.marked;
     }
