@@ -47,7 +47,7 @@ public class Grid extends JPanel {
         
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
-                grid[i][j] = new Cell(dif.cellSize, this, i, j);
+                grid[i][j] = new Cell(dif.cellSize, i, j);
                 grid[i][j].setIcon(images.get("cell.png"));
             }
         }
@@ -75,7 +75,7 @@ public class Grid extends JPanel {
         this.marking = false;
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
-                grid[i][j] = new Cell(this.dif.cellSize, this, i, j);
+                grid[i][j] = new Cell(this.dif.cellSize, i, j);
                 grid[i][j].setIcon(images.get("cell.png"));
             }
         }
@@ -97,7 +97,12 @@ public class Grid extends JPanel {
             disableAll();
             return;
         }
-        clearCells(cell);
+        this.clearCells(cell);
+        if (this.cleared()) {
+            System.out.println("You won!");
+            this.disableAll();
+            JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
+    	}
     }
 	
     /**
@@ -146,7 +151,7 @@ public class Grid extends JPanel {
                 continue;
             }
             seen[idx1][idx2] = true;
-            //we'll probably not need this one since this loop
+            //we're probably not going to need this one since this loop
             //should stop before reaching a bomb thanks to the if statement after the next,
             //the one that checks the number of adjacent mines.
             //if (c.isBomb()) { 
@@ -174,11 +179,6 @@ public class Grid extends JPanel {
                 cells.offer(grid[idx1][idx2]);
             }
         }
-    	if (cleared()) {
-            System.out.println("You won!");
-            this.disableAll();
-            JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
-    	}
     }
     
     /**
