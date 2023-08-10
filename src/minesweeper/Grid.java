@@ -1,4 +1,5 @@
 package minesweeper;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
+    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
 	
     private static Grid instance = null;
@@ -35,6 +36,7 @@ public class Grid extends JPanel {
      */
     private Grid(Difficulties dif) {
         super();
+        super.setBorder(BorderFactory.createRaisedSoftBevelBorder());
         this.dif = dif;
         this.MAXLIN = dif.numOfCellsX;
         this.MAXCOL = dif.numOfCellsY;
@@ -122,7 +124,7 @@ public class Grid extends JPanel {
             for (int c2 = 0; c2 < 3; c2++) {
                 int idx1 = i + c1;
                 int idx2 = j + c2;
-                if (invalidIndex(idx1, idx2)) {
+                if (!validIndex(idx1, idx2)) {
                     continue;
                 }
                 if (grid[idx1][idx2].isBomb()) {
@@ -176,7 +178,7 @@ public class Grid extends JPanel {
             for (int[] dir : directions) {
                 idx1 = c.i + dir[0];
                 idx2 = c.j + dir[1];
-                if (invalidIndex(idx1, idx2)) {
+                if (!validIndex(idx1, idx2)) {
                     continue;
                 }
                 cells.offer(grid[idx1][idx2]);
@@ -190,8 +192,8 @@ public class Grid extends JPanel {
      * @param j another index.
      * @return {@code true} if the inded {@code ij} is invalid. 
      */
-    private boolean invalidIndex(int i, int j) {
-    	return (i < 0 || i >= MAXLIN || j < 0 || j >= MAXCOL);
+    private boolean validIndex(int i, int j) {
+    	return (i >= 0 && i < MAXLIN) && (j >= 0 && j < MAXCOL);
     }
 
 	
@@ -274,6 +276,8 @@ public class Grid extends JPanel {
         }
     }
     
+    //This methos is not static because it deppends on a non-static
+    //private attribute (the difficulty) of an instance of Grid for properly resizing the images.
     /**
      * Loads all the necessary images and saves them in a HashMap for
      * ease of access. An image may be accessed by its filename.
@@ -296,7 +300,7 @@ public class Grid extends JPanel {
      * @param image the image name.
      * @return an image or null if there's no image associated with the string.
      */
-    public ImageIcon getImage(String image) {
+    public static ImageIcon getImage(String image) {
     	return images.get(image);
     }
 }

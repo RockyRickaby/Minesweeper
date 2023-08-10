@@ -3,11 +3,13 @@ package minesweeper;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class Cell extends JButton implements ActionListener {
+public class Cell extends JButton implements ActionListener, MouseListener {
     private boolean isBomb, marked, disabled;
     public final int i, j;
 	
@@ -25,6 +27,7 @@ public class Cell extends JButton implements ActionListener {
         this.isBomb = this.marked = this.disabled = false;
         super.setPreferredSize(new Dimension(cellSize, cellSize));
         super.addActionListener(this);
+        super.addMouseListener(this);
     }    
 	
     /**
@@ -50,13 +53,12 @@ public class Cell extends JButton implements ActionListener {
      * not be able to interact much with this cell while it is marked.
      */
     public void mark() { //hello, everybody, my name is Markiplier
-    	Grid grid = Grid.getInstance(null);
     	if (this.marked) {
             System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
-            super.setIcon(grid.getImage("cell"));
+            super.setIcon(Grid.getImage("cell"));
     	} else {
             System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
-            super.setIcon(grid.getImage("marked"));
+            super.setIcon(Grid.getImage("marked"));
     	}
     	this.marked = !this.marked;
     }
@@ -95,4 +97,38 @@ public class Cell extends JButton implements ActionListener {
             grid.action(this);
         }
     }
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		if (this.disabled || this.marked) {
+			return;
+		}
+		if (Grid.getInstance(null).inMarkMode()) {
+			return;
+		}
+		super.setIcon(Grid.getImage("cellpressed"));
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		if (this.disabled || this.marked) {
+			return;
+		}
+		super.setIcon(Grid.getImage("cell"));
+		
+	}
+
+	//These methods are not really useful, but multiple inheritances is not a thing in Java
+	//soooooo..... yeah.
+	@Override
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {
+	}
 }
