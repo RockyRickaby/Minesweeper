@@ -1,7 +1,7 @@
 package minesweeper;
 
 public enum Difficulties {
-    EASY(9, 9, 10, 50),
+    BEGINNER(9, 9, 10, 50),
     INTERMEDIATE(16, 16, 40, 40),
     ADVANCED(16, 30, 99, 36);
 	

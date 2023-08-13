@@ -4,6 +4,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.util.Arrays;
@@ -15,9 +16,11 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
+    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "marking", "shovel", "1", "2", "3", "4", "5", "6", "7", "8");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
-	
+    //this one is for the clearCells method.
+    private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
+    
     private static Grid instance = null;
 	
     private final int MAXLIN, MAXCOL, MINES;
@@ -25,9 +28,6 @@ public class Grid extends JPanel {
 	
     private Cell[][] grid;
     private boolean marking;
-    
-    //this one is for the clearCells method.
-    private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
 	
     /**
      * Constructs a minesweeper grid whose size changes according to the game's
@@ -36,7 +36,8 @@ public class Grid extends JPanel {
      */
     private Grid(Difficulties dif) {
         super();
-        super.setBorder(BorderFactory.createRaisedSoftBevelBorder());
+        super.setBackground(new Color(173, 173, 173));
+        super.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedSoftBevelBorder(), BorderFactory.createLoweredSoftBevelBorder()));
         this.dif = dif;
         this.MAXLIN = dif.numOfCellsX;
         this.MAXCOL = dif.numOfCellsY;
@@ -44,35 +45,27 @@ public class Grid extends JPanel {
         this.marking = false;
 		
         grid = new Cell[MAXLIN][MAXCOL];
-        this.loadImages();
+        loadImages(dif.cellSize - 3);
         this.setLayout(new GridLayout(MAXLIN, MAXCOL));
-        
-        for (int i = 0; i < MAXLIN; i++) {
-            for (int j = 0; j < MAXCOL; j++) {
-                grid[i][j] = new Cell(dif.cellSize, i, j);
-                grid[i][j].setIcon(images.get("cell"));
-            }
-        }
+        this.reset();
         this.setVisible(true);
-        this.setMines();
-        this.updateScreen();
     }
     
     /**
      * Just to make sure that there are no more than one current instances
      * of Grid. You may use {@code null} for the Difficulty
-     * if you just want the current instance. If there's no current instance available
-     * and {@code dif} is null, prepare yourself for some very foreseeable consequences
-     * (the NullPointerException kind of consequences).
+     * if you just want the current instance. This method will return null if
+     * {@code dif} is null in a situation where there's no current instance of grid.
      * @param dif the game's difficulty.
      * @return the Grid instance.
      */
     public static Grid getInstance(Difficulties dif) {
-    	if (instance == null) {
+    	if (instance == null && dif != null) {
             instance = new Grid(dif);
     	}
     	return instance;
-    }	
+    }
+
     /**
      * Resets this grid, making it possible to play the game again.
      */
@@ -99,13 +92,13 @@ public class Grid extends JPanel {
         }
         if (cell.isBomb()) {
             System.out.println("Game over!");
-            disableAll();
+            disableAll(true);
             return;
         }
         this.clearCells(cell);
         if (this.cleared()) {
             System.out.println("You won!");
-            this.disableAll();
+            disableAll(false);
             JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
     	}
     }
@@ -213,15 +206,19 @@ public class Grid extends JPanel {
     }
 	
     /**
-     * Only used when the game is over. This method just
-     * "disables" all the buttons and reveals all the bombs.
+     * Only used when the game is over. This method just does a
+     * soft disable on all the buttons. It will also reveal all the 
+     * bombs if the flag {@code showBombs} is set to {@code true}.
+     * 
+     * @param showBombs the boolean flag that tells if this method 
+     * should show all the bombs or not.
      * 
      */
-    private void disableAll() {
+    private void disableAll(boolean showBombs) {
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
                 Cell c = grid[i][j];
-                if (c.isBomb()) {
+                if (c.isBomb() && showBombs) {
                     c.setIcon(images.get("mine"));
                 }
                 c.disableCell();
@@ -281,8 +278,10 @@ public class Grid extends JPanel {
     /**
      * Loads all the necessary images and saves them in a HashMap for
      * ease of access. An image may be accessed by its filename.
+     * 
+     * @param dif the difficulty. used to scale the images to the correct size.
      */
-    private void loadImages() {
+    private static void loadImages(int scale) {
     	for (String s : imageNamesList) {
             java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
             if (imgurl == null) {
@@ -291,7 +290,14 @@ public class Grid extends JPanel {
                 System.exit(2);
             }
             ImageIcon img = new ImageIcon(imgurl);
-            images.put(s, new ImageIcon(img.getImage().getScaledInstance(dif.cellSize - 3, dif.cellSize - 3, Image.SCALE_SMOOTH)));
+            if (!images.containsKey(s)) {
+            	if (s.equals("shovel") || s.equals("marking")) {
+            		int tempscale = Difficulties.BEGINNER.cellSize;
+            		images.put(s, new ImageIcon(img.getImage().getScaledInstance(tempscale, tempscale, Image.SCALE_SMOOTH)));
+            		continue;
+            	}
+            	images.put(s, new ImageIcon(img.getImage().getScaledInstance(scale, scale, Image.SCALE_SMOOTH)));
+            }
     	}
     }
     
