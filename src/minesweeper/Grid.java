@@ -16,7 +16,8 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "marking", "shovel", "1", "2", "3", "4", "5", "6", "7", "8");
+    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
+    private static final List<String> buttonsImages = Arrays.asList("smiley", "marking", "shovel");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
     //this one is for the clearCells method.
     private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
@@ -45,7 +46,7 @@ public class Grid extends JPanel {
         this.marking = false;
 		
         grid = new Cell[MAXLIN][MAXCOL];
-        loadImages(dif.cellSize - 3);
+        loadImages(dif.cellSize - 2);
         this.setLayout(new GridLayout(MAXLIN, MAXCOL));
         this.reset();
         this.setVisible(true);
@@ -290,14 +291,19 @@ public class Grid extends JPanel {
                 System.exit(2);
             }
             ImageIcon img = new ImageIcon(imgurl);
-            if (!images.containsKey(s)) {
-            	if (s.equals("shovel") || s.equals("marking")) {
-            		int tempscale = Difficulties.BEGINNER.cellSize;
-            		images.put(s, new ImageIcon(img.getImage().getScaledInstance(tempscale, tempscale, Image.SCALE_SMOOTH)));
-            		continue;
-            	}
-            	images.put(s, new ImageIcon(img.getImage().getScaledInstance(scale, scale, Image.SCALE_SMOOTH)));
+            images.put(s, new ImageIcon(img.getImage().getScaledInstance(scale, scale, Image.SCALE_SMOOTH)));
+    	}
+    	
+    	int nscale = Difficulties.BEGINNER.cellSize - 2;
+    	for (String s : buttonsImages) {
+    		java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
+            if (imgurl == null) {
+                System.out.printf("It was not possible to load the image %s\n", s);
+                JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
+                System.exit(2);
             }
+            ImageIcon img = new ImageIcon(imgurl);
+            images.put(s, new ImageIcon(img.getImage().getScaledInstance(nscale, nscale, Image.SCALE_SMOOTH)));
     	}
     }
     

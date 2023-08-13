@@ -4,12 +4,13 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 
@@ -19,6 +20,8 @@ import javax.swing.JOptionPane;
 public class Minesweeper extends JFrame {
     private Grid grid;
     private Difficulties difficulty;
+    private static int clock = 0;
+    
     public Minesweeper() {
         super();
 		
@@ -29,11 +32,10 @@ public class Minesweeper extends JFrame {
         
         if (this.difficulty == null) {
         	System.exit(1);
-        }
-		
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        }  
         
         int buttonsSize = Difficulties.BEGINNER.cellSize;
+        
         JButton mark = new JButton();
         mark.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         mark.addActionListener(a -> {
@@ -47,22 +49,36 @@ public class Minesweeper extends JFrame {
             }
         });
         
+        JButton timeElapsed = new JButton("0");
+        timeElapsed.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
+        
         JButton restart = new JButton();
         restart.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         restart.addActionListener(a -> {
         	grid.reset();
             mark.setIcon(Grid.getImage("shovel"));
+            timeElapsed.setText("0");
+            clock = 0;
         });
         
+        JButton mines = new JButton(String.valueOf(difficulty.numOfBombs));
+        mines.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
+
+        JPanel buttons = new JPanel();
+        buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
+        buttons.add(mines);
+        buttons.add(Box.createHorizontalGlue());
         buttons.add(restart);
         buttons.add(mark);
+        buttons.add(Box.createHorizontalGlue());
+        buttons.add(timeElapsed);
         buttons.setBackground(new Color(173, 173, 173));
         buttons.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedSoftBevelBorder(), BorderFactory.createLoweredSoftBevelBorder()));
 		
         grid = Grid.getInstance(this.difficulty);
         
         mark.setIcon(Grid.getImage("shovel"));
-        restart.setIcon(Grid.getImage("shovel"));
+        restart.setIcon(Grid.getImage("smiley"));
         
         JPanel gridContainer = new JPanel(new GridBagLayout());
         gridContainer.add(grid);
@@ -84,8 +100,22 @@ public class Minesweeper extends JFrame {
         } else {
             this.setSize(676, 600);
         }
+        
         //this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
+        timer(timeElapsed);
+    }
+    private void timer(JButton timeElapsed) {
+    	new Thread() {
+    		public void run() {
+    			while (true) {
+    				try {
+    					Thread.sleep(1000);
+    				} catch(InterruptedException e) {}
+    				timeElapsed.setText(String.valueOf(clock++));
+    			}
+    		}
+    	}.start();
     }
 }
