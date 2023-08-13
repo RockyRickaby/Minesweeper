@@ -55,7 +55,7 @@ public class Minesweeper extends JFrame {
         JButton restart = new JButton();
         restart.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         restart.addActionListener(a -> {
-        	grid.reset();
+            grid.reset();
             mark.setIcon(Grid.getImage("shovel"));
             timeElapsed.setText("0");
             clock = 0;
@@ -107,15 +107,15 @@ public class Minesweeper extends JFrame {
         timer(timeElapsed);
     }
     private void timer(JButton timeElapsed) {
-    	new Thread() {
-    		public void run() {
-    			while (true) {
-    				try {
-    					Thread.sleep(1000);
-    				} catch(InterruptedException e) {}
-    				timeElapsed.setText(String.valueOf(clock++));
-    			}
-    		}
-    	}.start();
+        new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException e) {}
+                    timeElapsed.setText(String.valueOf(clock++));
+                    }
+            }
+        }.start();
     }
 }

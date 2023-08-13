@@ -296,7 +296,7 @@ public class Grid extends JPanel {
     	
     	int nscale = Difficulties.BEGINNER.cellSize - 2;
     	for (String s : buttonsImages) {
-    		java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
+            java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
             if (imgurl == null) {
                 System.out.printf("It was not possible to load the image %s\n", s);
                 JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
