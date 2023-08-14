@@ -19,6 +19,7 @@ public class Grid extends JPanel {
     private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
     private static final List<String> buttonsImages = Arrays.asList("smiley", "marking", "shovel");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
+    
     //this one is for the clearCells method.
     private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
     
@@ -172,10 +173,9 @@ public class Grid extends JPanel {
             for (int[] dir : directions) {
                 idx1 = c.i + dir[0];
                 idx2 = c.j + dir[1];
-                if (!validIndex(idx1, idx2)) {
-                    continue;
+                if (validIndex(idx1, idx2)) {
+                    cells.offer(grid[idx1][idx2]);
                 }
-                cells.offer(grid[idx1][idx2]);
             }
         }
     }
@@ -251,7 +251,7 @@ public class Grid extends JPanel {
                 if (c.isBomb()) {
                     continue;
                 }
-                if (!c.isEnabled() || c.isDisabled()) {
+                if (c.isDisabled()) {
                     count++;
                 }
             }
@@ -291,7 +291,7 @@ public class Grid extends JPanel {
                 System.exit(2);
             }
             ImageIcon img = new ImageIcon(imgurl);
-            images.put(s, new ImageIcon(img.getImage().getScaledInstance(scale, scale, Image.SCALE_SMOOTH)));
+            images.put(s, new ImageIcon(img.getImage().getScaledInstance(scale, -1, Image.SCALE_SMOOTH)));
     	}
     	
     	int nscale = Difficulties.BEGINNER.cellSize - 2;
@@ -303,7 +303,7 @@ public class Grid extends JPanel {
                 System.exit(2);
             }
             ImageIcon img = new ImageIcon(imgurl);
-            images.put(s, new ImageIcon(img.getImage().getScaledInstance(nscale, nscale, Image.SCALE_SMOOTH)));
+            images.put(s, new ImageIcon(img.getImage().getScaledInstance(nscale, -1, Image.SCALE_SMOOTH)));
     	}
     }
     

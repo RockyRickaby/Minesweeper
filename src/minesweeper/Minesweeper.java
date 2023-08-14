@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Toolkit;
 
@@ -33,7 +34,8 @@ public class Minesweeper extends JFrame {
         if (this.difficulty == null) {
         	System.exit(1);
         }  
-        
+        grid = Grid.getInstance(this.difficulty);
+
         int buttonsSize = Difficulties.BEGINNER.cellSize;
         
         JButton mark = new JButton();
@@ -48,6 +50,7 @@ public class Minesweeper extends JFrame {
             	mark.setIcon(Grid.getImage("shovel"));
             }
         });
+        mark.setIcon(Grid.getImage("shovel"));
         
         JButton timeElapsed = new JButton("0");
         timeElapsed.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
@@ -60,6 +63,7 @@ public class Minesweeper extends JFrame {
             timeElapsed.setText("0");
             clock = 0;
         });
+        restart.setIcon(Grid.getImage("smiley"));
         
         JButton mines = new JButton(String.valueOf(difficulty.numOfBombs));
         mines.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
@@ -74,33 +78,44 @@ public class Minesweeper extends JFrame {
         buttons.add(timeElapsed);
         buttons.setBackground(new Color(173, 173, 173));
         buttons.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedSoftBevelBorder(), BorderFactory.createLoweredSoftBevelBorder()));
-		
-        grid = Grid.getInstance(this.difficulty);
-        
-        mark.setIcon(Grid.getImage("shovel"));
-        restart.setIcon(Grid.getImage("smiley"));
         
         JPanel gridContainer = new JPanel(new GridBagLayout());
         gridContainer.add(grid);
-        JScrollPane scrollGrid = new JScrollPane(gridContainer);
-		
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(buttons, BorderLayout.PAGE_START);
-        panel.add(scrollGrid);
 
-        this.getContentPane().add(panel, BorderLayout.CENTER);
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        
+        c.gridy = 0;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridwidth = GridBagConstraints.RELATIVE;
+        c.gridheight = GridBagConstraints.RELATIVE;
+        c.anchor = GridBagConstraints.LINE_END;
+        panel.add(buttons, c);
+        // c.weightx = .3;
+        // c.weighty = .3;
+        c.gridy = 1;
+        c.fill = GridBagConstraints.BOTH;
+        panel.add(grid, c);
+
+        JScrollPane scrollPan = new JScrollPane(panel);
+        //scrollPan.setMaximumSize(new Dimension((difficulty.numOfCellsY * difficulty.cellSize) + 500, (difficulty.numOfCellsX * difficulty.cellSize) + 500));
+
+        // JPanel panel2 = new JPanel();
+        // panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
+        // panel2.add(scrollPan);
+
+        this.getContentPane().add(scrollPan, BorderLayout.CENTER);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setTitle("Minesweeper");
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double monitorHeight = screenSize.getHeight();
         double monitorWidth = screenSize.getWidth();
-        if (monitorHeight >= 1080 || this.difficulty == Difficulties.BEGINNER || (this.difficulty == Difficulties.ADVANCED && monitorWidth > 1024)) {
+        if (monitorHeight >= 1080 || this.difficulty == Difficulties.BEGINNER) {
             this.pack();
         } else {
-            this.setSize(676, 600);
+            this.setSize(686, 600);
         }
-        
         //this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
@@ -114,7 +129,7 @@ public class Minesweeper extends JFrame {
                         Thread.sleep(1000);
                     } catch(InterruptedException e) {}
                     timeElapsed.setText(String.valueOf(clock++));
-                    }
+                }
             }
         }.start();
     }

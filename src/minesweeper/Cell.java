@@ -3,6 +3,7 @@ package minesweeper;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -27,8 +28,32 @@ public class Cell extends JButton implements ActionListener, MouseListener {
         this.isBomb = this.marked = this.disabled = false;
         super.setPreferredSize(new Dimension(cellSize, cellSize));
         super.addActionListener(this);
-        super.addMouseListener(this);
-    }    
+        this.addmlist(this);
+    }
+
+    private void addmlist(Cell c) {
+        c.addMouseListener(new MouseAdapter() {
+            @Override
+	        public void mousePressed(MouseEvent e) {
+        		if (c.disabled || c.marked) {
+	        		return;
+		        }
+    		    if (Grid.getInstance(null).inMarkMode()) {
+	    		    return;
+    		    }
+        		c.setIcon(Grid.getImage("cellpressed"));
+	        }
+
+        	@Override
+	        public void mouseReleased(MouseEvent e) {
+		        if (c.disabled || c.marked) {
+			        return;
+        		}
+	        	c.setIcon(Grid.getImage("cell"));
+		
+    	    }
+        });
+    }
 	
     /**
      * Checks if this Cell is a bomb or not.
