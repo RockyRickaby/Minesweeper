@@ -5,13 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 
 @SuppressWarnings("serial")
-public class Cell extends JButton implements ActionListener, MouseListener {
-    private boolean isBomb, marked, disabled;
+public class Cell extends JButton implements ActionListener {
+    private boolean isMine, marked, disabled;
     public final int i, j;
 	
     /**
@@ -25,32 +24,27 @@ public class Cell extends JButton implements ActionListener, MouseListener {
         super();
         this.i = i;
         this.j = j;
-        this.isBomb = this.marked = this.disabled = false;
+        this.isMine = this.marked = this.disabled = false;
         super.setPreferredSize(new Dimension(cellSize, cellSize));
         super.addActionListener(this);
-        this.addmlist(this);
-    }
-
-    private void addmlist(Cell c) {
-        c.addMouseListener(new MouseAdapter() {
+        this.addMouseListener(new MouseAdapter() {
             @Override
 	        public void mousePressed(MouseEvent e) {
-        		if (c.disabled || c.marked) {
+        		if (disabled || marked) {
 	        		return;
 		        }
     		    if (Grid.getInstance(null).inMarkMode()) {
 	    		    return;
     		    }
-        		c.setIcon(Grid.getImage("cellpressed"));
+        		setIcon(Grid.getImage("cellpressed"));
 	        }
 
         	@Override
 	        public void mouseReleased(MouseEvent e) {
-		        if (c.disabled || c.marked) {
+		        if (disabled || marked) {
 			        return;
         		}
-	        	c.setIcon(Grid.getImage("cell"));
-		
+	        	setIcon(Grid.getImage("cell"));
     	    }
         });
     }
@@ -59,8 +53,8 @@ public class Cell extends JButton implements ActionListener, MouseListener {
      * Checks if this Cell is a bomb or not.
      * @return {@code true} if it is.
      */
-    public boolean isBomb() {
-        return this.isBomb;
+    public boolean isMine() {
+        return this.isMine;
     }
 
     /**
@@ -69,20 +63,20 @@ public class Cell extends JButton implements ActionListener, MouseListener {
      * while and if we can!
      * <p>A mine cell will always be a mine until the end of the game.
      */
-    public void makeBomb() {
-        this.isBomb = true;
+    public void makeMine() {
+        this.isMine = true;
     }
     
     /**
-     * Marks this cell as a possible bomb. The player will
+     * Toggle method. Marks this cell as a possible mine. The player will
      * not be able to interact much with this cell while it is marked.
      */
     public void mark() { //hello, everybody, my name is Markiplier
     	if (this.marked) {
-            System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
+            //System.out.printf("Unmarked the cell at [%d, %d]\n", this.i, this.j);
             super.setIcon(Grid.getImage("cell"));
     	} else {
-            System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
+            //System.out.printf("Marked the cell at [%d, %d]\n", this.i, this.j);
             super.setIcon(Grid.getImage("marked"));
     	}
     	this.marked = !this.marked;
@@ -122,38 +116,4 @@ public class Cell extends JButton implements ActionListener, MouseListener {
             grid.action(this);
         }
     }
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (this.disabled || this.marked) {
-			return;
-		}
-		if (Grid.getInstance(null).inMarkMode()) {
-			return;
-		}
-		super.setIcon(Grid.getImage("cellpressed"));
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		if (this.disabled || this.marked) {
-			return;
-		}
-		super.setIcon(Grid.getImage("cell"));
-		
-	}
-
-	//These methods are not really useful, but multiple inheritances is not a thing in Java
-	//soooooo..... yeah.
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
-	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
 }

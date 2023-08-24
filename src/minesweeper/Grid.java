@@ -16,12 +16,7 @@ import java.util.Random;
 
 @SuppressWarnings("serial")
 public class Grid extends JPanel {
-    private static final List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
-    private static final List<String> buttonsImages = Arrays.asList("smiley", "marking", "shovel");
     private static final HashMap<String, ImageIcon> images = new HashMap<>();
-    
-    //this one is for the clearCells method.
-    private static final int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
     
     private static Grid instance = null;
 	
@@ -77,6 +72,7 @@ public class Grid extends JPanel {
             for (int j = 0; j < MAXCOL; j++) {
                 grid[i][j] = new Cell(this.dif.cellSize, i, j);
                 grid[i][j].setIcon(images.get("cell"));
+                //grid[i][j].setRolloverEnabled(false);
             }
         }
         this.setMines();
@@ -89,17 +85,14 @@ public class Grid extends JPanel {
      */
     public void action(Cell cell) {
         if (cell.isMarked() || cell.isDisabled()) {
-            System.out.println("The cell is disabled/marked!");
             return;
         }
-        if (cell.isBomb()) {
-            System.out.println("Game over!");
+        if (cell.isMine()) {
             disableAll(true);
             return;
         }
         this.clearCells(cell);
         if (this.cleared()) {
-            System.out.println("You won!");
             disableAll(false);
             JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
     	}
@@ -122,7 +115,7 @@ public class Grid extends JPanel {
                 if (!validIndex(idx1, idx2)) {
                     continue;
                 }
-                if (grid[idx1][idx2].isBomb()) {
+                if (grid[idx1][idx2].isMine()) {
                     count += 1;
                 }
             }
@@ -142,7 +135,8 @@ public class Grid extends JPanel {
     	Queue<Cell> cells = new LinkedList<>();
     	boolean[][] seen = new boolean[MAXLIN][MAXCOL];
     	cells.offer(cell);
-    	
+    	int[][] directions = {{1,0}, {0,1}, {-1,0}, {0,-1}};
+
     	//walks through the grid in such a way that it looks like it flows through it like water.
     	while (!cells.isEmpty()) {
             Cell c = cells.poll();
@@ -151,19 +145,14 @@ public class Grid extends JPanel {
                 continue;
             }
             seen[idx1][idx2] = true;
-            //we're probably not going to need this one since this loop
-            //should stop before reaching a bomb thanks to the if statement after the next,
-            //the one that checks the number of adjacent mines.
-            //if (c.isBomb()) { 
-            //	continue;       
-            //}
+
             if (c.isMarked() || c.isDisabled()) {
             	continue;
             }
             int numMines = countAdjacentMines(idx1, idx2);
             if (numMines > 0) {
                 //c.setNumber(numMines);
-                System.out.printf("Number of adjacent mines in [%d, %d]: %d\n", idx1, idx2, numMines);
+                //System.out.printf("Number of adjacent mines in [%d, %d]: %d\n", idx1, idx2, numMines);
                 c.setIcon(images.get(String.format("%d", numMines)));
                 c.disableCell();
                 continue;
@@ -219,7 +208,7 @@ public class Grid extends JPanel {
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
                 Cell c = grid[i][j];
-                if (c.isBomb() && showBombs) {
+                if (c.isMine() && showBombs) {
                     c.setIcon(images.get("mine"));
                 }
                 c.disableCell();
@@ -238,17 +227,21 @@ public class Grid extends JPanel {
             do {
                 x = r.nextInt(MAXLIN);
                 y = r.nextInt(MAXCOL);
-            } while(grid[x][y].isBomb());
-            grid[x][y].makeBomb();
+            } while(grid[x][y].isMine());
+            grid[x][y].makeMine();
             //grid[x][y].setText("v");
         }
     }
     
+    /**
+     * Checks if all the non-mine cells were already opened.
+     * @return {@code true} if they were.
+     */
     private boolean cleared() {
     	int count = 0;
     	for (Cell[] cc : grid) {
             for (Cell c : cc) {
-                if (c.isBomb()) {
+                if (c.isMine()) {
                     continue;
                 }
                 if (c.isDisabled()) {
@@ -256,7 +249,8 @@ public class Grid extends JPanel {
                 }
             }
         }
-        return count == (MAXLIN * MAXCOL - dif.numOfBombs);
+        int numOfSafeCells = (MAXLIN * MAXCOL - dif.numOfBombs);
+        return count == numOfSafeCells;
     }
 	
     /**
@@ -283,6 +277,9 @@ public class Grid extends JPanel {
      * @param dif the difficulty. used to scale the images to the correct size.
      */
     private static void loadImages(int scale) {
+        List<String> imageNamesList = Arrays.asList("mine", "cell", "cellopened", "cellpressed", "marked", "1", "2", "3", "4", "5", "6", "7", "8");
+        List<String> buttonsImages = Arrays.asList("smiley", "marking", "shovel", "test");
+
     	for (String s : imageNamesList) {
             java.net.URL imgurl = App.class.getResource(String.format("images/%s.png", s));
             if (imgurl == null) {
@@ -301,6 +298,11 @@ public class Grid extends JPanel {
                 System.out.printf("It was not possible to load the image %s\n", s);
                 JOptionPane.showMessageDialog(null, String.format("It was not possible to load the image %s", s), "Failed to load image", JOptionPane.ERROR_MESSAGE);
                 System.exit(2);
+            }
+            if (s.equals("test")) {
+                ImageIcon img = new ImageIcon(imgurl);
+                images.put(s, new ImageIcon(img.getImage().getScaledInstance(nscale / 2, -1, Image.SCALE_SMOOTH)));
+                continue;
             }
             ImageIcon img = new ImageIcon(imgurl);
             images.put(s, new ImageIcon(img.getImage().getScaledInstance(nscale, -1, Image.SCALE_SMOOTH)));

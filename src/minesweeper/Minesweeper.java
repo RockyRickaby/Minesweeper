@@ -6,6 +6,7 @@ import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 import java.awt.BorderLayout;
@@ -22,6 +23,8 @@ public class Minesweeper extends JFrame {
     private Grid grid;
     private Difficulties difficulty;
     private static int clock = 0;
+    private static ImageIcon shovel, test, marking;
+    private static Timer timer = null;
     
     public Minesweeper() {
         super();
@@ -35,6 +38,9 @@ public class Minesweeper extends JFrame {
         	System.exit(1);
         }  
         grid = Grid.getInstance(this.difficulty);
+        shovel = Grid.getImage("shovel");
+        test = Grid.getImage("test");
+        marking = Grid.getImage("marking");
 
         int buttonsSize = Difficulties.BEGINNER.cellSize;
         
@@ -44,29 +50,38 @@ public class Minesweeper extends JFrame {
         	grid.toggleMarkMode();
             if (grid.inMarkMode()) {
             	System.out.println("Mark mode toggled on");
-            	mark.setIcon(Grid.getImage("marking"));
+            	mark.setIcon(marking);
             } else {
             	System.out.println("Mark mode toggled off");
-            	mark.setIcon(Grid.getImage("shovel"));
+            	mark.setIcon(shovel);
             }
         });
-        mark.setIcon(Grid.getImage("shovel"));
+        mark.setIcon(shovel);
         
         JButton timeElapsed = new JButton("0");
         timeElapsed.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
+       // timeElapsed.setIcon(test);
+        timeElapsed.setRolloverEnabled(false);
+        
+        timer = new Timer(timeElapsed);
         
         JButton restart = new JButton();
         restart.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         restart.addActionListener(a -> {
+        	//timer.stop();
             grid.reset();
-            mark.setIcon(Grid.getImage("shovel"));
-            timeElapsed.setText("0");
-            clock = 0;
+            mark.setIcon(shovel);
+            //timeElapsed.setText("0");
+            //clock = 0;
+            //timer.start();
+            timer.reset();
         });
         restart.setIcon(Grid.getImage("smiley"));
         
         JButton mines = new JButton(String.valueOf(difficulty.numOfBombs));
-        mines.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
+        mines.setPreferredSize(new Dimension((int) (buttonsSize * 1.5), buttonsSize));
+        mines.setRolloverEnabled(false);
+        mines.setSelected(false);
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
@@ -76,6 +91,18 @@ public class Minesweeper extends JFrame {
         buttons.add(mark);
         buttons.add(Box.createHorizontalGlue());
         buttons.add(timeElapsed);
+
+        JButton test1 = new JButton();
+        test1.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
+        test1.setIcon(test);
+        test1.setRolloverEnabled(false);
+        //buttons.add(test1);
+        JButton test2 = new JButton();
+        test2.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
+        test2.setIcon(test);
+        test2.setRolloverEnabled(false);
+        //buttons.add(test2);
+        
         buttons.setBackground(new Color(173, 173, 173));
         buttons.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedSoftBevelBorder(), BorderFactory.createLoweredSoftBevelBorder()));
         
@@ -96,9 +123,14 @@ public class Minesweeper extends JFrame {
         c.gridy = 1;
         c.fill = GridBagConstraints.BOTH;
         panel.add(grid, c);
-
+        
         JScrollPane scrollPan = new JScrollPane(panel);
-        //scrollPan.setMaximumSize(new Dimension((difficulty.numOfCellsY * difficulty.cellSize) + 500, (difficulty.numOfCellsX * difficulty.cellSize) + 500));
+        // int maxwidth = -1;
+        // int maxheight = -1;
+        // if () {
+
+        // }
+        //scrollPan.setMaximumSize(new Dimension((difficulty.numOfCellsY * difficulty.cellSize) + 700, (difficulty.numOfCellsX * difficulty.cellSize) + 450));
 
         // JPanel panel2 = new JPanel();
         // panel2.setLayout(new BoxLayout(panel2, BoxLayout.PAGE_AXIS));
@@ -110,7 +142,7 @@ public class Minesweeper extends JFrame {
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double monitorHeight = screenSize.getHeight();
-        double monitorWidth = screenSize.getWidth();
+        //double monitorWidth = screenSize.getWidth();
         if (monitorHeight >= 1080 || this.difficulty == Difficulties.BEGINNER) {
             this.pack();
         } else {
@@ -119,18 +151,19 @@ public class Minesweeper extends JFrame {
         //this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        timer(timeElapsed);
+        //timer(timeElapsed);
+        timer.start();
     }
-    private void timer(JButton timeElapsed) {
-        new Thread() {
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch(InterruptedException e) {}
-                    timeElapsed.setText(String.valueOf(clock++));
-                }
-            }
-        }.start();
-    }
+    // private void timer(JButton timeElapsed) {
+    //     new Thread() {
+    //         public void run() {
+    //             while (true) {
+    //                 try {
+    //                     Thread.sleep(1000);
+    //                 } catch(InterruptedException e) {}
+    //                 timeElapsed.setText(String.valueOf(clock++));
+    //             }
+    //         }
+    //     }.start();
+    // }
 }
