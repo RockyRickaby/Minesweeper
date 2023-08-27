@@ -22,9 +22,9 @@ import javax.swing.JOptionPane;
 public class Minesweeper extends JFrame {
     private Grid grid;
     private Difficulties difficulty;
+    private static ImageIcon shovel, marking;//, test;
     private static int clock = 0;
-    private static ImageIcon shovel, test, marking;
-    private static Timer timer = null;
+    //private static Timer timer = null;
     
     public Minesweeper() {
         super();
@@ -39,7 +39,7 @@ public class Minesweeper extends JFrame {
         }  
         grid = Grid.getInstance(this.difficulty);
         shovel = Grid.getImage("shovel");
-        test = Grid.getImage("test");
+        //test = Grid.getImage("test");
         marking = Grid.getImage("marking");
 
         int buttonsSize = Difficulties.BEGINNER.cellSize;
@@ -59,22 +59,27 @@ public class Minesweeper extends JFrame {
         mark.setIcon(shovel);
         
         JButton timeElapsed = new JButton("0");
-        timeElapsed.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
+        timeElapsed.setPreferredSize(new Dimension((int) (buttonsSize * 1.5), buttonsSize));
        // timeElapsed.setIcon(test);
         timeElapsed.setRolloverEnabled(false);
         
-        timer = new Timer(timeElapsed);
+        //timer = new Timer(timeElapsed);
+        
+        javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
+        	if (!grid.isDisabled()) {
+        		timeElapsed.setText(String.valueOf(++clock));
+        	}
+        });
         
         JButton restart = new JButton();
         restart.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         restart.addActionListener(a -> {
-        	//timer.stop();
+        	timer.stop();
+            timeElapsed.setText("0");
+            clock = 0;
             grid.reset();
             mark.setIcon(shovel);
-            //timeElapsed.setText("0");
-            //clock = 0;
-            //timer.start();
-            timer.reset();
+            timer.start();
         });
         restart.setIcon(Grid.getImage("smiley"));
         
@@ -92,15 +97,15 @@ public class Minesweeper extends JFrame {
         buttons.add(Box.createHorizontalGlue());
         buttons.add(timeElapsed);
 
-        JButton test1 = new JButton();
-        test1.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
-        test1.setIcon(test);
-        test1.setRolloverEnabled(false);
+        // JButton test1 = new JButton();
+        // test1.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
+        // test1.setIcon(test);
+        // test1.setRolloverEnabled(false);
         //buttons.add(test1);
-        JButton test2 = new JButton();
-        test2.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
-        test2.setIcon(test);
-        test2.setRolloverEnabled(false);
+        // JButton test2 = new JButton();
+        // test2.setPreferredSize(new Dimension(buttonsSize / 2, buttonsSize));
+        // test2.setIcon(test);
+        // test2.setRolloverEnabled(false);
         //buttons.add(test2);
         
         buttons.setBackground(new Color(173, 173, 173));
@@ -151,19 +156,6 @@ public class Minesweeper extends JFrame {
         //this.setResizable(false);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
-        //timer(timeElapsed);
         timer.start();
     }
-    // private void timer(JButton timeElapsed) {
-    //     new Thread() {
-    //         public void run() {
-    //             while (true) {
-    //                 try {
-    //                     Thread.sleep(1000);
-    //                 } catch(InterruptedException e) {}
-    //                 timeElapsed.setText(String.valueOf(clock++));
-    //             }
-    //         }
-    //     }.start();
-    // }
 }

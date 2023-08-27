@@ -24,7 +24,7 @@ public class Grid extends JPanel {
     private final Difficulties dif;
 	
     private Cell[][] grid;
-    private boolean marking;
+    private boolean marking, disabled;
 	
     /**
      * Constructs a minesweeper grid whose size changes according to the game's
@@ -39,7 +39,7 @@ public class Grid extends JPanel {
         this.MAXLIN = dif.numOfCellsX;
         this.MAXCOL = dif.numOfCellsY;
         this.MINES = dif.numOfBombs;
-        this.marking = false;
+        this.disabled = this.marking = false;
 		
         grid = new Cell[MAXLIN][MAXCOL];
         loadImages(dif.cellSize - 2);
@@ -67,7 +67,7 @@ public class Grid extends JPanel {
      * Resets this grid, making it possible to play the game again.
      */
     public void reset() {
-        this.marking = false;
+        this.disabled = this.marking = false;
         for (int i = 0; i < MAXLIN; i++) {
             for (int j = 0; j < MAXCOL; j++) {
                 grid[i][j] = new Cell(this.dif.cellSize, i, j);
@@ -88,14 +88,20 @@ public class Grid extends JPanel {
             return;
         }
         if (cell.isMine()) {
+        	this.disabled = true;
             disableAll(true);
             return;
         }
         this.clearCells(cell);
         if (this.cleared()) {
+        	this.disabled = true;
             disableAll(false);
             JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
     	}
+    }
+    
+    public boolean isDisabled() {
+    	return this.disabled;
     }
 	
     /**
