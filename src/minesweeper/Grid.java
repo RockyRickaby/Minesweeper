@@ -88,13 +88,13 @@ public class Grid extends JPanel {
             return;
         }
         if (cell.isMine()) {
-        	this.disabled = true;
+            this.disabled = true;
             disableAll(true);
             return;
         }
         this.clearCells(cell);
         if (this.cleared()) {
-        	this.disabled = true;
+            this.disabled = true;
             disableAll(false);
             JOptionPane.showMessageDialog(null, "You won!", "Congrats", JOptionPane.INFORMATION_MESSAGE);
     	}
@@ -162,7 +162,7 @@ public class Grid extends JPanel {
                 c.setIcon(images.get(String.format("%d", numMines)));
                 c.disableCell();
                 continue;
-    		}
+            }
             c.disableCell();
             c.setIcon(images.get("cellopened"));
             for (int[] dir : directions) {

@@ -35,7 +35,7 @@ public class Minesweeper extends JFrame {
         this.difficulty = (Difficulties) JOptionPane.showInputDialog(this, "Please choose a difficulty", "Difficulties", JOptionPane.INFORMATION_MESSAGE, null, difficulties, difficulties[0]);
         
         if (this.difficulty == null) {
-        	System.exit(1);
+            System.exit(1);
         }  
         grid = Grid.getInstance(this.difficulty);
         shovel = Grid.getImage("shovel");
@@ -46,8 +46,8 @@ public class Minesweeper extends JFrame {
         
         JButton mark = new JButton();
         mark.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
-        mark.addActionListener(a -> {
-        	grid.toggleMarkMode();
+        mark.addActionListener(e -> {
+            grid.toggleMarkMode();
             if (grid.inMarkMode()) {
             	System.out.println("Mark mode toggled on");
             	mark.setIcon(marking);
@@ -57,24 +57,26 @@ public class Minesweeper extends JFrame {
             }
         });
         mark.setIcon(shovel);
+        mark.setToolTipText("Mark/unmark cell");
         
         JButton timeElapsed = new JButton("0");
         timeElapsed.setPreferredSize(new Dimension((int) (buttonsSize * 1.5), buttonsSize));
-       // timeElapsed.setIcon(test);
+        //timeElapsed.setIcon(test);
         timeElapsed.setRolloverEnabled(false);
+        timeElapsed.setToolTipText("Time elapsed");
         
         //timer = new Timer(timeElapsed);
         
         javax.swing.Timer timer = new javax.swing.Timer(1000, e -> {
-        	if (!grid.isDisabled()) {
-        		timeElapsed.setText(String.valueOf(++clock));
-        	}
+            if (!grid.isDisabled()) {
+                timeElapsed.setText(String.valueOf(++clock));
+            }
         });
         
         JButton restart = new JButton();
         restart.setPreferredSize(new Dimension(buttonsSize, buttonsSize));
         restart.addActionListener(a -> {
-        	timer.stop();
+            timer.stop();
             timeElapsed.setText("0");
             clock = 0;
             grid.reset();
@@ -82,11 +84,13 @@ public class Minesweeper extends JFrame {
             timer.start();
         });
         restart.setIcon(Grid.getImage("smiley"));
+        restart.setToolTipText("Restart game");
         
         JButton mines = new JButton(String.valueOf(difficulty.numOfBombs));
         mines.setPreferredSize(new Dimension((int) (buttonsSize * 1.5), buttonsSize));
         mines.setRolloverEnabled(false);
         mines.setSelected(false);
+        mines.setToolTipText("Number of mines");
 
         JPanel buttons = new JPanel();
         buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));

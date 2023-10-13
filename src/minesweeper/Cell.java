@@ -29,23 +29,23 @@ public class Cell extends JButton implements ActionListener {
         super.addActionListener(this);
         this.addMouseListener(new MouseAdapter() {
             @Override
-	        public void mousePressed(MouseEvent e) {
-        		if (disabled || marked) {
-	        		return;
-		        }
-    		    if (Grid.getInstance(null).inMarkMode()) {
-	    		    return;
-    		    }
-        		setIcon(Grid.getImage("cellpressed"));
-	        }
+            public void mousePressed(MouseEvent e) {
+                if (disabled || marked) {
+                    return;
+                }
+                if (Grid.getInstance(null).inMarkMode()) {
+                    return;
+                }
+                setIcon(Grid.getImage("cellpressed"));
+            }
 
-        	@Override
-	        public void mouseReleased(MouseEvent e) {
-		        if (disabled || marked) {
-			        return;
-        		}
-	        	setIcon(Grid.getImage("cell"));
-    	    }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (disabled || marked) {
+                    return;
+                }
+                setIcon(Grid.getImage("cell"));
+            }
         });
     }
 	
@@ -109,7 +109,7 @@ public class Cell extends JButton implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-    	Grid grid = Grid.getInstance(null);
+        Grid grid = Grid.getInstance(null);
         if (grid.inMarkMode() && !this.disabled) {
             this.mark();
         } else {
